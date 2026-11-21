@@ -274,6 +274,55 @@ footer{border-top:3px solid transparent;border-image:var(--grad) 1;padding:1.5re
 ------------------------------------------------------------------- */
 const POSTS = [
   {
+    slug: 'network-topologies-and-osi-model',
+    title: "Network+ Week: Network Topologies and the OSI Model",
+    date: '2026-11-21',
+    tag: 'Study log',
+    summary: "This week I studied network topologies and the OSI model for CompTIA Network+. I am printing out a diagram of each topology to understand how each layout works, and I learned how data is wrapped as it moves through the seven layers.",
+    body: `
+  <p>This week I started studying CompTIA Network+, a new part of my journey. Security+ taught me how to protect systems. Network+ is teaching me how those systems are connected and how they talk to each other. This week I focused on two big ideas: network topologies and the OSI model.</p>
+  <h3>What a topology is</h3>
+  <p>A topology is the shape of a network. Think of it as a map of the roads between computers. Some shapes are cheaper, some are faster, and some are harder to break.</p>
+  <p>Reading about shapes only goes so far, so I am printing out a diagram of each topology. Seeing the lines between devices on paper helps me understand how each layout really works and what happens when one piece fails.</p>
+  <h3>The topologies I studied</h3>
+  <ul>
+    <li><b>Star:</b> every device plugs into one central switch. This is the most common layout in offices today. If one cable breaks, only that one device goes down. If the central switch fails, everyone goes down.</li>
+    <li><b>Bus:</b> every device hangs off one long main cable, with a terminator at each end. If that main cable breaks, the whole network stops.</li>
+    <li><b>Ring:</b> devices connect in a circle and pass a "token" around, so only the device holding the token can send. FDDI is an older version that used two fiber rings, so if one ring broke, traffic could wrap around on the other.</li>
+    <li><b>Mesh:</b> in a full mesh, every site connects to every other site. It is the most reliable, but it is expensive. A partial mesh gives some sites extra links without connecting everything.</li>
+    <li><b>Tree:</b> groups of star networks connected in branches, like a family tree.</li>
+    <li><b>Hub-and-spoke:</b> branch offices all connect back to headquarters. It is cheaper, but headquarters becomes the weak spot.</li>
+    <li><b>Point-to-point:</b> one dedicated link between exactly two places.</li>
+    <li><b>Hybrid:</b> a mix of two or more shapes. Most real networks are hybrids.</li>
+  </ul>
+  <h3>The one question that matters</h3>
+  <p>The best study tip I found this week: almost every topology question comes down to the single point of failure. Ask yourself, "If this one piece breaks, what stops working?" That one question explains the strengths and weaknesses of every layout above.</p>
+  <h3>Counting links in a mesh</h3>
+  <p>To find how many links a full mesh needs, use n(n-1)/2, where n is the number of sites. Four sites need 6 links, five sites need 10, and six sites need 15. This is why a full mesh gets expensive so quickly.</p>
+  <h3>The OSI model</h3>
+  <p>The OSI model breaks network communication into 7 layers, from the physical cable at the bottom to the app a person uses at the top:</p>
+  <ol>
+    <li>Physical</li>
+    <li>Data Link</li>
+    <li>Network</li>
+    <li>Transport</li>
+    <li>Session</li>
+    <li>Presentation</li>
+    <li>Application</li>
+  </ol>
+  <p>My memory trick, from layer 1 to layer 7, is "Please Do Not Throw Sausage Pizza Away."</p>
+  <p>Memorizing the names is only the start. I plan to go over the OSI model several more times, repeating the material until I understand what each layer actually does and how the layers work together, not just the definitions.</p>
+  <h3>Encapsulation: how data gets wrapped</h3>
+  <p>When you send something over a network, it moves down the layers before it leaves your computer. At each layer, it gets wrapped with new information, like a letter going into an envelope, then into a box, then into a shipping crate. The computer on the other end unwraps it in the opposite order. This wrapping is called encapsulation.</p>
+  <h3>Ports, attacks and defenses</h3>
+  <p>Ports are like numbered doors on a computer. Each service uses its own door, so the computer knows where to send the data. For example, secure websites use port 443.</p>
+  <p>I also studied how attacks can happen at each layer of the OSI model, and the defenses that match each one. This is where Network+ and Security+ start to connect for me. Knowing which layer an attack targets tells you where to put the protection.</p>
+  <h3>Why this matters for identity and access management</h3>
+  <p>My goal is a career in identity and access management. IAM decides who can get in and what they can do. But every login and every access request travels across a network. Understanding how networks are shaped, where they can fail, and how data moves through each layer helps me see where access controls belong and how an attacker might try to get around them.</p>
+  <p>Next, I am continuing my studies and plan to set my exam date soon.</p>
+`
+  },
+  {
     slug: 'identity-before-launch-email-verification-account-cleanup',
     title: "Identity Before Launch: Email Verification, Account Cleanup, and Bot Protection in My App",
     date: '2026-11-20',
