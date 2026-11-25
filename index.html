@@ -274,6 +274,68 @@ footer{border-top:3px solid transparent;border-image:var(--grad) 1;padding:1.5re
 ------------------------------------------------------------------- */
 const POSTS = [
   {
+    slug: 'ad-company-structure-ous-and-groups',
+    title: 'Turning My Active Directory Lab Into a Real Company: OUs, Groups, and Fixing My Own Mess',
+    date: '2026-11-25',
+    tag: 'IAM',
+    summary: "My AD lab was a junk drawer: a catch-all OU, users in random places, and an OU I created inside another OU by accident. This week I restructured it into real departments, added a Medical department with Doctors and Nurses, and mapped what I built to security concepts like RBAC, least privilege and the joiner-mover-leaver lifecycle.",
+    body: `
+  <p>When I first set up my domain controller, I treated Active Directory like a junk drawer. I had a catch-all OU, users in random places, and I even created an OU inside another OU by accident. This week I cleaned it up and restructured it the way a real company would. Here's what I did, what I got wrong, and what it means in security terms.</p>
+
+  <figure><img src="/images/ad-structure/AD-structure-chart.jpg" alt="Chart of my Active Directory lab: the domain with Accounting, HR, IT, Sales and Medical OUs, Doctors and Nurses child OUs, users and security groups" style="width:100%;height:auto;border-radius:12px" loading="lazy"><figcaption>The structure I ended up with. Domain details are blurred.</figcaption></figure>
+
+  <h3>The three building blocks, in plain English</h3>
+  <p>I kept mixing these up, so I wrote them down:</p>
+  <ul>
+    <li><strong>User:</strong> one person's login. Their ID badge.</li>
+    <li><strong>OU (Organizational Unit):</strong> a container that organizes users and computers, and where Group Policy applies. The department office they sit in.</li>
+    <li><strong>Security group:</strong> a list of users who get the same access. The key that opens certain doors.</li>
+  </ul>
+  <p><strong>The rule I now live by: OUs decide where you sit. Groups decide what you can open.</strong> A person sits in one OU but can be in many groups.</p>
+
+  <h3>My first mistake</h3>
+  <p>I started in PowerShell to list everything in the domain. I typed <code>Get-ADUser</code> on its own, PowerShell asked me for a <code>Filter:</code>, and I answered <code>- Filter*</code>. Red syntax error.</p>
+  <figure><img src="/images/ad-structure/02-mistake-and-fix.jpg" alt="PowerShell showing a syntax error from Get-ADUser with '- Filter*', then the working Get-ADUser -Filter * command" style="width:100%;height:auto;border-radius:12px" loading="lazy"><figcaption>The mistake, then the fix, on the same screen.</figcaption></figure>
+  <p>At the <code>Filter:</code> prompt, PowerShell only wants the filter itself (<code>*</code>), not the parameter name. The fix is one line: <code>Get-ADUser -Filter *</code>, where <code>*</code> means "all users."</p>
+
+  <h3>Cleaning up the mess</h3>
+  <p>I found a catch-all OU holding users from different departments, an accidental "Doctors/Nurses" OU inside it, and an "Account" group with no real department around it.</p>
+  <p><strong>Windows won't let you delete an OU by default.</strong> Every new OU has "Protect object from accidental deletion" turned on. To delete or move one: turn on View &gt; Advanced Features, open the OU's Properties, go to the Object tab, untick the box, and then delete or move it. Turn protection back on for anything you keep.</p>
+  <p>I created a proper Accounting OU at the top level, moved the users and the Account group into it, and deleted the old catch-all OU.</p>
+  <figure><img src="/images/ad-structure/10-OU-accounting.jpg" alt="Active Directory Users and Computers showing the Accounting OU with two users and the Account security group" style="width:100%;height:auto;border-radius:12px" loading="lazy"><figcaption>Accounting, with its people and its group together.</figcaption></figure>
+
+  <h3>Adding a Medical department, nesting OUs on purpose</h3>
+  <p>This time I nested OUs on purpose: a Medical department with Doctors and Nurses inside it as siblings. My first try put the doctor users straight into Medical instead of a Doctors OU, so I created the OU and used Move. Tip: whatever folder you right-click is where the new object goes.</p>
+  <figure><img src="/images/ad-structure/07-OU-medical.jpg" alt="Medical OU containing the Doctors and Nurses OUs" style="width:100%;height:auto;border-radius:12px" loading="lazy"><figcaption>Medical, with Doctors and Nurses as child OUs.</figcaption></figure>
+  <figure><img src="/images/ad-structure/08-OU-medical-doctors.jpg" alt="Doctors OU containing two doctor accounts" style="width:100%;height:auto;border-radius:12px" loading="lazy"><figcaption>Doctors. All names are fictional lab accounts.</figcaption></figure>
+  <figure><img src="/images/ad-structure/09-OU-medical-nurses.jpg" alt="Nurses OU containing two nurse accounts" style="width:100%;height:auto;border-radius:12px" loading="lazy"><figcaption>Nurses.</figcaption></figure>
+
+  <h3>Why security groups matter</h3>
+  <p>Picture a Patient Records folder that every doctor and nurse needs. Without groups, you grant access person by person, and when someone leaves you have to remember every folder they had. That's how access piles up and leaks happen. With groups, you grant access to one group once. New hire? Add them to the group. Someone leaves? Remove them and the access is gone everywhere.</p>
+  <p>So I created a shared <strong>Medical-Records-Access</strong> group for Doctors and Nurses. Nesting the team groups inside it means both teams get access through one group, while I can still manage each team on its own.</p>
+
+  <h3>What I did, in cybersecurity terms</h3>
+  <ul>
+    <li><strong>Role-based access control (RBAC):</strong> access comes from roles (Doctors, Nurses, Accounting), not from individual people.</li>
+    <li><strong>Least privilege:</strong> only Medical-Records-Access will reach patient records. Sales and Accounting get nothing they don't need.</li>
+    <li><strong>Identity lifecycle (joiner, mover, leaver):</strong> a new hire joins a group, a mover changes groups, and a leaver is removed. Access follows the role automatically.</li>
+    <li><strong>Reducing access creep:</strong> group-based access stops permissions from piling up on accounts over time.</li>
+    <li><strong>Auditability and access reviews:</strong> "Who can see patient records?" is answered by one group's member list, which makes reviews and compliance (think HIPAA for health data) realistic.</li>
+    <li><strong>Change safety:</strong> OUs are protected from accidental deletion, a small integrity control that stops one misclick from wiping a department.</li>
+    <li><strong>Segmentation by OU:</strong> each department can get its own Group Policy later, such as stricter controls for Medical.</li>
+  </ul>
+
+  <h3>What I learned</h3>
+  <ul>
+    <li><strong>OU = where you sit, group = what you can open.</strong> Once that clicked, the rest made sense.</li>
+    <li><strong>Structure OUs like the business:</strong> departments, not people's names.</li>
+    <li><strong>Read the error.</strong> It told me exactly what was wrong.</li>
+  </ul>
+  <p>In production I'd host shared files on a dedicated file server, not the domain controller. In my lab, DC01 is the only server.</p>
+  <p>Next up: a Patient Records share that only Medical-Records-Access can open, then proving a Sales user gets "Access denied." After that, Group Policy for passwords and lockouts.</p>
+`
+  },
+  {
     slug: 'network-topologies-and-osi-model',
     title: "Network+ Week: Network Topologies and the OSI Model",
     date: '2026-11-21',
