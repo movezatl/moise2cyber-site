@@ -274,6 +274,41 @@ footer{border-top:3px solid transparent;border-image:var(--grad) 1;padding:1.5re
 ------------------------------------------------------------------- */
 const POSTS = [
   {
+    slug: 'help-desk-incident-tickets',
+    title: 'Working Help Desk Tickets Like a Real Company: A Phishing Click and a Locked-Out New Hire',
+    date: '2026-11-27',
+    tag: 'Help desk',
+    summary: "I worked two practice IT support tickets from start to finish for a made-up healthcare company: a user who typed his password into a phishing page, and a new hire who couldn't open the Accounting shared drive. Here are both tickets as PDFs, and what I learned from each.",
+    body: `
+  <p>Studying for certs teaches you the terms. Tickets teach you the order you do things in. So I set up practice tickets for a made-up company, <strong>Harbor Point Health</strong>. The top of each ticket is filled in the way a user would submit it, and I worked the rest as the technician: intake, triage, troubleshooting, root cause, fix, escalation, and close.</p>
+  <p><em>Harbor Point Health and everyone in these tickets are fictional. These are practice tickets.</em></p>
+
+  <h3>Ticket 1: INC-10448, "Access denied on the Accounting shared drive" (P4)</h3>
+  <p>Priya, a new Staff Accountant, could sign in to her laptop and Outlook, but got <code>Access is denied</code> on <code>\\\\hph-fs01\\Accounting</code>. She could see a Front Desk folder she didn't need.</p>
+  <figure><img src="/images/tickets/INC-10448-shared-drive-access-p1.jpg" alt="Page 1 of ticket INC-10448: the user's submitted request, then my intake and triage notes" style="width:100%;height:auto;border:1px solid var(--line);border-radius:10px" loading="lazy"><figcaption><b>Page 1.</b> What Priya submitted, then my intake and triage.</figcaption></figure>
+  <p><strong>Root cause:</strong> her account was copied from a Front Desk user, so she had Front Desk groups and no Accounting group. <strong>Fix:</strong> after her manager approved the access, I added her to the Accounting security group, removed the Front Desk groups (least privilege), and had her sign out and back in.</p>
+  <p><strong>What I learned:</strong> <code>\\\\hph-fs01\\Accounting</code> is a <em>folder</em> on a file server, not a group. The folder's permissions are given to a security group, and people get access by joining that group. Copying a user to create a new account copies their access too, so check it every time.</p>
+  <p><a href="/tickets/INC-10448-shared-drive-access.pdf" target="_blank" rel="noopener">Open the full ticket (PDF)</a></p>
+
+  <h3>Ticket 2: INC-10436, "I think I clicked a fake payroll email" (P2)</h3>
+  <p>Marcus in HR typed his username and password into a fake payroll login page. Twenty minutes later he got a Duo push he didn't start, and he denied it.</p>
+  <figure><img src="/images/tickets/INC-10436-phishing-click-p2.jpg" alt="Page 2 of ticket INC-10436: timed troubleshooting steps, root cause, resolution, escalation to SOC, and lessons learned" style="width:100%;height:auto;border:1px solid var(--line);border-radius:10px" loading="lazy"><figcaption><b>Page 2.</b> Contain first, then investigate, then escalate.</figcaption></figure>
+  <p><strong>My first draft was too slow.</strong> I wrote that we "recommended" Marcus change his password and closed the ticket two days later. In a real incident the password is already in the attacker's hands, and the denied Duo push proves they tried to use it. The fix is to contain it right away: force a password reset, sign him out of every session, check the sign-in logs and his mailbox rules, block the sender and link, pull the email from everyone else's inbox, then escalate to the SOC.</p>
+  <p><strong>What I learned:</strong> on a security ticket, containment comes before paperwork. Don't verify identity or follow up by email when that email account might be compromised. Use a phone callback. And MFA did its job here: the password was stolen, but the sign-in still failed.</p>
+  <p><a href="/tickets/INC-10436-phishing-click.pdf" target="_blank" rel="noopener">Open the full ticket (PDF)</a></p>
+
+  <h3>The ticket flow I'm practicing</h3>
+  <ul>
+    <li><strong>Intake:</strong> assign it, set the real category, and choose the priority yourself, not from the user's urgency.</li>
+    <li><strong>Verify identity:</strong> a callback to the number on file, or the manager.</li>
+    <li><strong>Triage:</strong> ask questions, and write down the impact and who else is affected.</li>
+    <li><strong>Investigate and fix:</strong> number each step, with the time and what you saw.</li>
+    <li><strong>Escalate</strong> when it's beyond your role, and say why.</li>
+    <li><strong>Verify, prevent, close:</strong> confirm with the user and write one lesson that stops it from happening again.</li>
+  </ul>
+    `
+  },
+  {
     slug: 'ad-company-structure-ous-and-groups',
     title: 'Turning My Active Directory Lab Into a Real Company: OUs, Groups, and Fixing My Own Mess',
     date: '2026-11-25',
